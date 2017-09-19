@@ -1,19 +1,27 @@
 package com.primehana.jacky.liqord;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -23,6 +31,7 @@ public class VendorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vendor);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -38,19 +47,19 @@ public class VendorActivity extends AppCompatActivity {
         editText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                v.onTouchEvent(event);
-                InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                }
-                return true;
+            v.onTouchEvent(event);
+            InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            }
+            return true;
             }
         });
 
         View.OnClickListener listener = new View.OnClickListener() {
             public void onClick(View v) {
-                Button button = (Button)v;
-                editText.setText(editText.getText().toString() + button.getText().toString());
+            Button button = (Button)v;
+            editText.setText(editText.getText().toString() + button.getText().toString());
             }
         };
 
@@ -78,10 +87,10 @@ public class VendorActivity extends AppCompatActivity {
         Button button_delete = (Button)findViewById(R.id.button_delete);
         button_delete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String str = editText.getText().toString();
-                if (!str.isEmpty()) {
-                    editText.setText(str.substring(0, str.length() - 1));
-                }
+            String str = editText.getText().toString();
+            if (!str.isEmpty()) {
+                editText.setText(str.substring(0, str.length() - 1));
+            }
             }
         });
     }
@@ -101,10 +110,28 @@ public class VendorActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.review_logout) {
+            Dialog dlg = onCreateDialog();
+            dlg.show();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public Dialog onCreateDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.review_logout)
+            .setItems(R.array.review_logout, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    if (which == 0) {
+                        Intent intent = new Intent(VendorActivity.this, ReviewActivity.class);
+                        startActivity(intent);
+                    } else if (which == 1) {
+                        Intent intent = new Intent(VendorActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                    }
+                }
+            });
+        return builder.create();
     }
 }
